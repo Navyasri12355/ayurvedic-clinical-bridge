@@ -1,0 +1,47 @@
+# Core ML and NLP dependencies
+torch>=2.0.0
+transformers>=4.30.0
+sentence-transformers>=2.2.0
+datasets>=2.12.0
+
+# Neo4j and graph processing
+neo4j>=5.8.0
+py2neo>=2021.2.3
+
+# Web framework and API
+fastapi>=0.100.0
+uvicorn>=0.22.0
+pydantic[email]>=2.0.0
+slowapi>=0.1.9
+redis>=7.0.0
+httpx>=0.28.0
+
+# Data processing and utilities
+numpy>=1.24.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+nltk>=3.8.0
+spacy>=3.6.0
+
+# Development tools
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.4.0
+pre-commit>=3.3.0
+
+# Logging and monitoring
+loguru>=0.7.0
+prometheus-client>=0.17.0
+
+# Security and authentication
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+python-multipart>=0.0.6
+
+# Environment and configuration
+python-dotenv>=1.0.0
+pyyaml>=6.0.0
+
+# Medical ontology and data
+requests>=2.31.0
+beautifulsoup4>=4.12.0

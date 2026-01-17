@@ -1,0 +1,56 @@
+ayurgenixai:
+  checksum: 9af6eb5462afa11fc9429dd0564615f6
+  columns:
+  - Disease
+  - Symptom1
+  - Symptom2
+  - Parameter1
+  - Parameter2
+  - Severity
+  - Duration
+  description: Mock AyurGenixAI dataset for testing (447 diseases, 35 parameters)
+  download_date: '2026-01-09T12:44:22.465405'
+  file_path: data\datasets\ayurgenixai_processed.csv
+  name: ayurgenixai
+  source: mock
+  total_records: 450
+  version: 1.0-mock
+ayurvedic_meals:
+  checksum: f1be48dd1eee962429294b58a840e250
+  columns:
+  - text
+  - label
+  description: Dietary recommendations and meal planning data for Ayurvedic nutrition
+  download_date: '2026-01-09T12:44:58.036108'
+  file_path: data\datasets\ayurvedic_meals_processed.csv
+  name: ayurvedic_meals
+  source: huggingface
+  total_records: 1100
+  version: '1.0'
+ayurvedic_qa:
+  checksum: 338393e53335529ebb58d596d70d33ec
+  columns:
+  - Question
+  - Answer
+  description: 82.3k question-answer pairs covering Ayurvedic concepts, treatments,
+    and disease management
+  download_date: '2026-01-09T12:44:37.201216'
+  file_path: data\datasets\ayurvedic_qa_processed.csv
+  name: ayurvedic_qa
+  source: huggingface
+  total_records: 82285
+  version: '1.0'
+ayurvedic_remedies:
+  checksum: 7c5dc82379e9ea0035ffe636652eeae6
+  columns:
+  - Symptom
+  - Remedy
+  - Treatment
+  - Dosha
+  description: Mock Ayurvedic Remedies dataset for testing (120 symptom-remedy mappings)
+  download_date: '2026-01-09T12:44:53.036683'
+  file_path: data\datasets\ayurvedic_remedies_processed.csv
+  name: ayurvedic_remedies
+  source: mock
+  total_records: 120
+  version: 1.0-mock

@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  # Neo4j Graph Database
+  neo4j:
+    image: neo4j:5.8-community
+    container_name: ayurvedic-neo4j
+    ports:
+      - "7474:7474"  # HTTP
+      - "7687:7687"  # Bolt
+    environment:
+      - NEO4J_AUTH=neo4j/ayurvedic123
+      - NEO4J_PLUGINS=["apoc", "graph-data-science"]
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*,gds.*
+      - NEO4J_dbms_memory_heap_initial__size=1G
+      - NEO4J_dbms_memory_heap_max__size=2G
+      - NEO4J_dbms_memory_pagecache_size=1G
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+      - neo4j_import:/var/lib/neo4j/import
+      - neo4j_plugins:/plugins
+    networks:
+      - ayurvedic-network
+    restart: unless-stopped
+
+  # ChromaDB Vector Database
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: ayurvedic-chromadb
+    ports:
+      - "8000:8000"
+    environment:
+      - CHROMA_SERVER_HOST=0.0.0.0
+      - CHROMA_SERVER_HTTP_PORT=8000
+    volumes:
+      - chromadb_data:/chroma/chroma
+    networks:
+      - ayurvedic-network
+    restart: unless-stopped
+
+  # Application Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ayurvedic-app
+    ports:
+      - "8080:8080"
+    environment:
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=ayurvedic123
+      - CHROMADB_HOST=chromadb
+      - CHROMADB_PORT=8000
+      - PYTHONPATH=/app
+    volumes:
+      - ./ayurvedic_clinical_bridge:/app/ayurvedic_clinical_bridge
+      - ./data:/app/data
+      - ./models:/app/models
+    depends_on:
+      - neo4j
+      - chromadb
+    networks:
+      - ayurvedic-network
+    restart: unless-stopped
+    command: ["uvicorn", "ayurvedic_clinical_bridge.api.main:app", "--host", "0.0.0.0", "--port", "8080", "--reload"]
+
+  # Frontend (static site)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ayurvedic-frontend
+    ports:
+      - "8081:80"
+    environment:
+      - VITE_BACKEND_URL=http://app:8080
+    networks:
+      - ayurvedic-network
+    restart: unless-stopped
+
+  # Redis for caching (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: ayurvedic-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ayurvedic-network
+    restart: unless-stopped
+
+volumes:
+  neo4j_data:
+  neo4j_logs:
+  neo4j_import:
+  neo4j_plugins:
+  chromadb_data:
+  redis_data:
+
+networks:
+  ayurvedic-network:
+    driver: bridge
