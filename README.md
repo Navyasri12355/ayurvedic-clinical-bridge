@@ -310,9 +310,6 @@ docker-compose down
 - Monitor API rate limits
 - Implement proper logging and monitoring
 
-## License
-
-MIT License - see LICENSE file for details.
 
 ## Disclaimer
 
