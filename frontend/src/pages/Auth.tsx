@@ -74,6 +74,11 @@ const Auth: React.FC<AuthProps> = ({ prefillEmail, isReauth = false }) => {
       return false
     }
 
+    if (!isLogin && password.length > 72) {
+      setError('Password cannot be longer than 72 characters')
+      return false
+    }
+
     if (!isLogin && userType === 'qualified_practitioner') {
       if (!licenseNumber || !specialization || !issuingAuthority || !expiryDate) {
         setError('All practitioner credentials are required')
@@ -309,9 +314,10 @@ const Auth: React.FC<AuthProps> = ({ prefillEmail, isReauth = false }) => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder={isLogin ? "Enter your password" : "Create a password (min. 8 characters)"}
+                placeholder={isLogin ? "Enter your password" : "Create a password (8-72 characters)"}
                 required
                 disabled={loading}
+                maxLength={72}
               />
             </div>
 
@@ -326,6 +332,7 @@ const Auth: React.FC<AuthProps> = ({ prefillEmail, isReauth = false }) => {
                   placeholder="Confirm your password"
                   required
                   disabled={loading}
+                  maxLength={72}
                 />
               </div>
             )}

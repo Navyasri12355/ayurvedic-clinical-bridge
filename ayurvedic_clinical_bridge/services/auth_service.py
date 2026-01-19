@@ -20,7 +20,17 @@ class AuthService:
     
     def __init__(self):
         """Initialize authentication service."""
-        self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+        # Initialize password context with explicit bcrypt configuration
+        try:
+            self.pwd_context = CryptContext(
+                schemes=["bcrypt"], 
+                deprecated="auto",
+                bcrypt__rounds=12  # Explicit rounds configuration
+            )
+        except Exception as e:
+            logger.warning(f"Failed to initialize bcrypt with rounds, using default: {e}")
+            self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+            
         self.secret_key = os.getenv("JWT_SECRET_KEY", "your-secret-key-change-in-production")
         self.algorithm = "HS256"
         self.access_token_expire_minutes = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
@@ -33,14 +43,72 @@ class AuthService:
     
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
         """Verify a password against its hash."""
-        return self.pwd_context.verify(plain_password, hashed_password)
+        try:
+            import bcrypt
+            
+            # Handle password truncation the same way as in hashing
+            password_bytes = plain_password.encode('utf-8')
+            if len(password_bytes) > 72:
+                password_bytes = password_bytes[:72]
+                try:
+                    plain_password = password_bytes.decode('utf-8')
+                except UnicodeDecodeError:
+                    for i in range(71, 0, -1):
+                        try:
+                            plain_password = password_bytes[:i].decode('utf-8')
+                            break
+                        except UnicodeDecodeError:
+                            continue
+                    else:
+                        plain_password = ''.join(c for c in plain_password if ord(c) < 128)[:72]
+                
+                password_bytes = plain_password.encode('utf-8')
+            
+            # Verify using bcrypt directly
+            return bcrypt.checkpw(password_bytes, hashed_password.encode('utf-8'))
+            
+        except Exception as e:
+            logger.error(f"Password verification failed: {e}")
+            return False
     
     def get_password_hash(self, password: str) -> str:
         """Generate password hash."""
-        # Truncate password to 72 bytes for bcrypt compatibility
-        if len(password.encode('utf-8')) > 72:
-            password = password[:72]
-        return self.pwd_context.hash(password)
+        try:
+            import bcrypt
+            
+            # Ensure password is within bcrypt's 72-byte limit
+            password_bytes = password.encode('utf-8')
+            if len(password_bytes) > 72:
+                # Truncate safely at byte level
+                password_bytes = password_bytes[:72]
+                # Try to decode back to ensure we don't have broken UTF-8
+                try:
+                    password = password_bytes.decode('utf-8')
+                except UnicodeDecodeError:
+                    # If we broke a UTF-8 sequence, truncate more conservatively
+                    for i in range(71, 0, -1):
+                        try:
+                            password = password_bytes[:i].decode('utf-8')
+                            break
+                        except UnicodeDecodeError:
+                            continue
+                    else:
+                        # Last resort: use only ASCII part
+                        password = ''.join(c for c in password if ord(c) < 128)[:72]
+                
+                password_bytes = password.encode('utf-8')
+            
+            # Generate salt and hash
+            salt = bcrypt.gensalt()
+            hashed = bcrypt.hashpw(password_bytes, salt)
+            return hashed.decode('utf-8')
+            
+        except Exception as e:
+            logger.error(f"Password hashing failed: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Password hashing system error"
+            )
     
     def create_access_token(self, data: dict, expires_delta: Optional[timedelta] = None) -> str:
         """Create JWT access token."""
