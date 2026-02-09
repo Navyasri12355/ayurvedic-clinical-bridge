@@ -252,7 +252,6 @@ The medicine mapping system provides three main functionalities:
 Comprehensive comparison between different NLP architectures:
 - **BiLSTM-CRF**: Optimized for named entity recognition in medical texts
 - **BioBERT**: Leverages transformer architecture for contextual understanding
-- **Hybrid Approach**: Combines both models for enhanced accuracy
 - **Performance Metrics**: Precision, recall, F1-score, and inference time comparisons
 
 ### Disease Coverage
