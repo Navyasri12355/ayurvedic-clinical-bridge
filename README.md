@@ -334,28 +334,6 @@ The system integrates knowledge from multiple sources using advanced NLP process
 - **Clinical Guidelines**: Evidence-based treatment protocols processed through BiLSTM-CRF
 - **Medical Ontologies**: Structured medical knowledge for cross-domain mapping
 
-## Deployment
-
-### Docker Deployment
-```bash
-# Build and run with Docker Compose
-docker-compose up --build -d
-
-# View logs
-docker-compose logs -f
-
-# Stop services
-docker-compose down
-```
-
-### Production Considerations
-- Set strong `SECRET_KEY` in production
-- Use HTTPS for all communications
-- Configure proper CORS settings
-- Set up database backups
-- Monitor API rate limits
-- Implement proper logging and monitoring
-
 
 ## Disclaimer
 
