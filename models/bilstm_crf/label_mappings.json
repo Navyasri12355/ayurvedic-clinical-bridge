@@ -1,0 +1,11 @@
+{
+  "O": 0,
+  "B_HERB": 1,
+  "I_HERB": 2,
+  "B_DISEASE": 3,
+  "I_DISEASE": 4,
+  "B_SYMPTOM": 5,
+  "I_SYMPTOM": 6,
+  "B_DOSAGE": 7,
+  "I_DOSAGE": 8
+}

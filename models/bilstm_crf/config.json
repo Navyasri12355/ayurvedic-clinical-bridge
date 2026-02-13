@@ -1,0 +1,19 @@
+{
+  "vocab_size": 1594,
+  "embedding_dim": 100,
+  "hidden_dim": 64,
+  "num_layers": 2,
+  "num_labels": 19,
+  "dropout": 0.3,
+  "bidirectional": true,
+  "use_pretrained_embeddings": true,
+  "pretrained_embedding_path": null,
+  "freeze_embeddings": false,
+  "learning_rate": 0.001,
+  "weight_decay": 0.0001,
+  "max_length": 256,
+  "batch_size": 2,
+  "eos_token_id": 2,
+  "pad_token_id": 0,
+  "bos_token_id": 1
+}

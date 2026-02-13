@@ -1,0 +1,16 @@
+{
+  "herb_normalization": {
+    "ginger": "ginger",
+    "tumeric": "turmeric",
+    "ashwaganda": "ashwagandha",
+    "brahmi": "brahmi",
+    "holy basil": "tulsi",
+    "indian gooseberry": "amla"
+  },
+  "phrase_patterns": {
+    "benefits of": "herb_benefits_query",
+    "uses of": "herb_uses_query",
+    "properties of": "herb_properties_query",
+    "what is": "herb_info_query"
+  }
+}

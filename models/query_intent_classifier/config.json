@@ -1,0 +1,5 @@
+{
+  "model_name": "dmis-lab/biobert-v1.1",
+  "num_classes": 3,
+  "hidden_size": 768
+}

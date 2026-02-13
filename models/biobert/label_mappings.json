@@ -1,0 +1,16 @@
+{
+  "id2label": {
+    "0": "O",
+    "1": "B-DISEASE",
+    "2": "I-DISEASE",
+    "3": "B-SYMPTOM",
+    "4": "I-SYMPTOM"
+  },
+  "label2id": {
+    "O": 0,
+    "B-DISEASE": 1,
+    "I-DISEASE": 2,
+    "B-SYMPTOM": 3,
+    "I-SYMPTOM": 4
+  }
+}
