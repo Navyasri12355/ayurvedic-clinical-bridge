@@ -1,361 +1,79 @@
-# Byte-compiled / optimized / DLL files
+# Python / Virtual Env
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
-*.so
-
-# Distribution / packaging
+.venv/
+venv/
+env/
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
 *.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
 .pytest_cache/
-cover/
+.coverage
+htmlcov/
 
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-.pybuilder/
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-.python-version
-
-# pipenv
-Pipfile.lock
-
-# poetry
-poetry.lock
-
-# pdm
-.pdm.toml
-
-# PEP 582
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
+# Environment Variables
 .env
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+.env.*.local
 
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype static type analyzer
-.pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# PyCharm
-.idea/
-
-# VS Code
+# IDEs / Editors
 .vscode/
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
-# Node.js / Frontend
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# Frontend build outputs
-frontend/dist/
-frontend/build/
-frontend/.next/
-frontend/out/
-
-# Frontend cache and temp files
-frontend/.vite/
-frontend/.turbo/
-frontend/.nuxt/
-frontend/.output/
-frontend/.vercel/
-frontend/.netlify/
-
-# ESLint cache
-.eslintcache
-
-# TypeScript cache
-*.tsbuildinfo
-
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Microbundle cache
-.rpt2_cache/
-.rts2_cache_cjs/
-.rts2_cache_es/
-.rts2_cache_umd/
-
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# parcel-bundler cache (https://parceljs.org/)
-.parcel-cache
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
 
 # Logs
 logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
 
-# Project specific logs
-logs/knowledge_population.log
-logs/model_training.log
-logs/pure_ayurgenix_training.log
+# Node.js / Frontend (Vite)
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+frontend/.eslintcache
+frontend/coverage/
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage/
-*.lcov
-
-# nyc test coverage
-.nyc_output
-
-# Dependency directories
-jspm_packages/
-
-# Snowpack dependency directory (https://snowpack.dev/)
-web_modules/
-
-# TypeScript cache
-*.tsbuildinfo
-
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Storybook build outputs
-.out
-.storybook-out
-
-# Temporary folders
-tmp/
-temp/
-.tmp/
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Project specific data files
+# Data Files
+# Ignore cache and large temp data
 data/cache/
 data/compiled_knowledge/
-data/model_metrics.json
-data/training_status.json
-
-# Keep essential datasets but ignore large processed files
+# Keep essential core datasets
+!data/herb.json
 !data/ayurgenix_dataset.csv
 !data/ayurvedic_herbs_comprehensive.csv
-!data/herb.json
-!data/amidha_herbs_comprehensive.json
-data/datasets/*.csv
-data/datasets/*.json
-data/datasets/*.jsonl
-data/datasets/*.parquet
-data/datasets/*.feather
-!data/datasets/ayurgenixai_processed.csv
-!data/datasets/ayurvedic_meals_processed.csv
-!data/datasets/ayurvedic_qa_processed.csv
-!data/datasets/ayurvedic_remedies_processed.csv
-!data/datasets/datasets_metadata.yaml
 
-# ML Models and weights (keep structure but ignore large files)
-models/*/pytorch_model.bin
-models/*/model.safetensors
-models/*/model.pt
-models/*/best_model.pt
-models/*/*.bin
-models/*/*.pt
-models/*/*.pth
-models/*/*.h5
-models/*/*.hdf5
-models/*/*.onnx
-models/*/*.pkl
-models/*/*.joblib
-# Keep model configs and mappings
-!models/*/config.json
-!models/*/*_mappings.json
-!models/*/label_mappings.json
-!models/*/tokenizer*.json
-!models/*/vocab.txt
-!models/*/special_tokens_map.json
-!models/*/added_tokens.json
-!models/model_status.json
-!models/preprocessing_rules.json
-!models/*_results.json
+# ML Models
+# Ignore large model weights to save space/bandwidth
+*.bin
+*.pt
+*.pth
+*.h5
+*.safetensors
+*.onnx
+*.pkl
+*.joblib
 
-# Hugging Face cache
-.cache/huggingface/
-transformers_cache/
+# But keep model configuration and metadata
+!models/**/config.json
+!models/**/tokenizer.json
+!models/**/tokenizer_config.json
+!models/**/vocab.txt
+!models/**/special_tokens_map.json
+!models/**/added_tokens.json
+!models/**/*_mappings.json
+!models/**/model_status.json
+!models/**/preprocessing_rules.json
+!models/**/*_results.json
 
-# PyTorch specific
-*.pth.tar
-checkpoint*.pth
-
-# TensorFlow specific
-*.pb
-saved_model/
-checkpoints/
-
-# Training artifacts
-wandb/
-mlruns/
-tensorboard_logs/
-lightning_logs/
-
-# API keys and secrets
-.secrets
-secrets.json
-config/secrets/
-
-# Medical data (ensure no PHI)
-*.dcm
-*.dicom
-patient_data/
-clinical_data/
-
-# Database files
-*.db
-*.sqlite
-*.sqlite3
-
-# Docker
-.dockerignore
-
-# Backup files
+# Temporary / Backup files
+tmp/
+temp/
 *.bak
-*.backup
 *.old
-
-# Editor swap files
-*.swp
-*.swo
-*~
-
-# Local development
-.local/
-local/
