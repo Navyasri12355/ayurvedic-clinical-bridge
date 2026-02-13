@@ -1,0 +1,37 @@
+text,label,confidence
+sore throat symptoms,disease_prediction,1.0
+stomach ache treatment,disease_prediction,1.0
+symptoms of depression,disease_prediction,1.0
+insomnia symptoms,disease_prediction,1.0
+diagnosis of cold,disease_prediction,1.0
+what causes stress,disease_prediction,1.0
+experiencing cough,disease_prediction,1.0
+suffering from constipation,disease_prediction,1.0
+medicine for stress,disease_prediction,1.0
+having muscle pain,disease_prediction,1.0
+treatment for stomach ache,disease_prediction,1.0
+cure for constipation,disease_prediction,1.0
+holistic healing,general_info,1.0
+vata pitta kapha,general_info,1.0
+traditional medicine,general_info,1.0
+ayurvedic lifestyle,general_info,1.0
+ayurvedic principles,general_info,1.0
+tell me about ayurveda,general_info,1.0
+dosha types,general_info,1.0
+what is ayurveda,general_info,1.0
+alternative medicine,general_info,1.0
+herbal medicine,general_info,1.0
+natural remedies,general_info,1.0
+ayurvedic diet,general_info,1.0
+how does indrayava help,herb_benefits,1.0
+properties of aloe vera,herb_benefits,1.0
+advantages of triphala,herb_benefits,1.0
+properties of vatsanabha,herb_benefits,1.0
+advantages of guggulu,herb_benefits,1.0
+therapeutic effects of pushkarmool,herb_benefits,1.0
+shirisha benefits,herb_benefits,1.0
+medicinal properties of amalaki rasayana,herb_benefits,1.0
+how does holy basil help,herb_benefits,1.0
+benefits of vrikshamla,herb_benefits,1.0
+ikshu benefits,herb_benefits,1.0
+what does shatavari ksheera do,herb_benefits,1.0

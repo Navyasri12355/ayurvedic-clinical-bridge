@@ -1,0 +1,212 @@
+{
+  "models": [
+    {
+      "model_name": "Simple RNN",
+      "model_type": "rnn",
+      "latency_ms": 13.883045613765717,
+      "memory_usage_mb": 694.703125,
+      "throughput_samples_per_sec": 2122.253632545471,
+      "inference_time_ms": 0.43384517543017864,
+      "training_loss": [
+        0.6464986369013787,
+        0.22784437909722327,
+        0.16419583112001418
+      ],
+      "validation_loss": [
+        0.2679131865501404,
+        0.18194833695888518,
+        0.18254477977752687
+      ],
+      "epochs": [
+        1,
+        2,
+        3
+      ],
+      "training_time_hours": 0.0067882282204098175,
+      "training_time_seconds": 24.43762707710266,
+      "accuracy": 0.9361213235294118,
+      "precision": 0.673808651104373,
+      "recall": 0.7073050084871083,
+      "f1_score": 0.6427711444399539,
+      "parameters_count": 9276745,
+      "gpu_memory_mb": null,
+      "cpu_usage_percent": 0.0,
+      "timestamp": "2026-01-17T18:11:23.409443",
+      "evaluation_dataset": "AyurGenixAI + Clinical NER Dataset",
+      "hardware_info": {
+        "cpu": "20 cores",
+        "memory_gb": 14,
+        "python_version": "3.13"
+      }
+    },
+    {
+      "model_name": "LSTM",
+      "model_type": "lstm",
+      "latency_ms": 24.484905898571014,
+      "memory_usage_mb": 797.88671875,
+      "throughput_samples_per_sec": 1307.6304614543915,
+      "inference_time_ms": 0.7651533093303442,
+      "training_loss": [
+        0.9695057660341263,
+        0.4238447278738022,
+        0.26331512853503225
+      ],
+      "validation_loss": [
+        0.47641714215278624,
+        0.3177493393421173,
+        0.21535440683364868
+      ],
+      "epochs": [
+        1,
+        2,
+        3
+      ],
+      "training_time_hours": 0.007390933963987562,
+      "training_time_seconds": 26.60736608505249,
+      "accuracy": 0.9229090073529411,
+      "precision": 0.4563975684228204,
+      "recall": 0.40797537977998954,
+      "f1_score": 0.42035026018138777,
+      "parameters_count": 10100041,
+      "gpu_memory_mb": null,
+      "cpu_usage_percent": 49.9,
+      "timestamp": "2026-01-17T18:11:50.178758",
+      "evaluation_dataset": "AyurGenixAI + Clinical NER Dataset",
+      "hardware_info": {
+        "cpu": "20 cores",
+        "memory_gb": 14,
+        "python_version": "3.13"
+      }
+    },
+    {
+      "model_name": "GRU",
+      "model_type": "gru",
+      "latency_ms": 14.732470035552979,
+      "memory_usage_mb": 856.44921875,
+      "throughput_samples_per_sec": 1526.1888682842255,
+      "inference_time_ms": 0.4603896886110306,
+      "training_loss": [
+        0.7012209892272949,
+        0.25085649117827413,
+        0.15095421746373178
+      ],
+      "validation_loss": [
+        0.3262626945972443,
+        0.19091503620147704,
+        0.17596947252750397
+      ],
+      "epochs": [
+        1,
+        2,
+        3
+      ],
+      "training_time_hours": 0.011225455668237475,
+      "training_time_seconds": 40.411643266677856,
+      "accuracy": 0.9365808823529411,
+      "precision": 0.6673442834068726,
+      "recall": 0.726589576246161,
+      "f1_score": 0.6926421751206147,
+      "parameters_count": 9825609,
+      "gpu_memory_mb": null,
+      "cpu_usage_percent": 50.5,
+      "timestamp": "2026-01-17T18:12:30.745519",
+      "evaluation_dataset": "AyurGenixAI + Clinical NER Dataset",
+      "hardware_info": {
+        "cpu": "20 cores",
+        "memory_gb": 14,
+        "python_version": "3.13"
+      }
+    },
+    {
+      "model_name": "BiLSTM-CRF",
+      "model_type": "bilstm",
+      "latency_ms": 29.177728056907654,
+      "memory_usage_mb": 915.87890625,
+      "throughput_samples_per_sec": 963.9687895774841,
+      "inference_time_ms": 0.9118040017783642,
+      "training_loss": [
+        0.7494671121239662,
+        0.2315177232027054,
+        0.11809072755277157
+      ],
+      "validation_loss": [
+        0.30717602372169495,
+        0.1708335041999817,
+        0.137891748547554
+      ],
+      "epochs": [
+        1,
+        2,
+        3
+      ],
+      "training_time_hours": 0.014515176282988655,
+      "training_time_seconds": 52.254637718200684,
+      "accuracy": 0.9609375,
+      "precision": 0.7410843630199555,
+      "recall": 0.8470823191735033,
+      "f1_score": 0.7865318437233553,
+      "parameters_count": 11724361,
+      "gpu_memory_mb": null,
+      "cpu_usage_percent": 47.9,
+      "timestamp": "2026-01-17T18:13:23.181168",
+      "evaluation_dataset": "AyurGenixAI + Clinical NER Dataset",
+      "hardware_info": {
+        "cpu": "20 cores",
+        "memory_gb": 14,
+        "python_version": "3.13"
+      }
+    },
+    {
+      "model_name": "BioBERT-Transformer",
+      "model_type": "transformer",
+      "latency_ms": 112.10787206888199,
+      "memory_usage_mb": 3158.36328125,
+      "throughput_samples_per_sec": 463.6318564414978,
+      "inference_time_ms": 3.503371002152562,
+      "training_loss": [
+        1.0654435843229293,
+        0.4060248628258705,
+        0.19146719723939895
+      ],
+      "validation_loss": [
+        0.5098368108272553,
+        0.23226216435432434,
+        0.1736331671476364
+      ],
+      "epochs": [
+        1,
+        2,
+        3
+      ],
+      "training_time_hours": 0.31323847181267206,
+      "training_time_seconds": 1127.6585023403168,
+      "accuracy": 0.9481847426470589,
+      "precision": 0.7158329476222147,
+      "recall": 0.7843158868995496,
+      "f1_score": 0.735279785066917,
+      "parameters_count": 108317193,
+      "gpu_memory_mb": null,
+      "cpu_usage_percent": 34.4,
+      "timestamp": "2026-01-17T18:32:12.763818",
+      "evaluation_dataset": "AyurGenixAI + Clinical NER Dataset",
+      "hardware_info": {
+        "cpu": "20 cores",
+        "memory_gb": 14,
+        "python_version": "3.13"
+      }
+    }
+  ],
+  "timestamp": "2026-01-17T18:32:12.964895",
+  "evaluation_dataset": "AyurGenixAI + Clinical NER Dataset",
+  "metadata": {
+    "evaluation_date": "2026-01-17T18:32:12.964910",
+    "hardware": {
+      "cpu": "20 cores",
+      "memory_gb": 14,
+      "python_version": "3.13"
+    },
+    "framework": "PyTorch 2.9.1+cpu",
+    "evaluation_samples": 5000,
+    "cross_validation_folds": 5
+  }
+}

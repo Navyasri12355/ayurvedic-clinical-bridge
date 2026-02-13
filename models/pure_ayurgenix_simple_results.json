@@ -1,0 +1,15 @@
+{
+  "training_time": 5534.23651599884,
+  "best_loss": 5.139712407141507,
+  "train_losses": [
+    5.897167185761332,
+    5.732974041736285,
+    5.388874954498975
+  ],
+  "dataset_info": {
+    "total_examples": 3568,
+    "train_examples": 2854,
+    "val_examples": 714,
+    "num_diseases": 367
+  }
+}
