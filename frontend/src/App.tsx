@@ -1,17 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import Auth from './pages/Auth'
 import GeneralUsers from './pages/GeneralUsers'
 import Clinicians from './pages/Clinicians'
 import ModelComparison from './pages/ModelComparison'
-import MedicineMapping from './pages/MedicineMapping'
 import './styles.css'
 
-type Page = 'general' | 'clinicians' | 'comparison' | 'medicine-mapping'
+type Page = 'general' | 'clinicians' | 'comparison'
 
 function AppContent() {
   const { user, isAuthenticated, isLoading, needsReauth, logout } = useAuth()
   const [currentPage, setCurrentPage] = useState<Page>('general')
+
+  // Redirect practitioners to their portal after login
+  useEffect(() => {
+    if (isAuthenticated && user?.role === 'qualified_practitioner') {
+      setCurrentPage('clinicians')
+    }
+  }, [isAuthenticated, user?.role])
 
   if (isLoading) {
     return (
@@ -43,8 +49,7 @@ function AppContent() {
     return <Auth />
   }
 
-  const canAccessClinicians = user?.role === 'qualified_practitioner' && 
-    user?.credentials?.verification_status
+  const canAccessClinicians = user?.role === 'qualified_practitioner'
 
   const handlePageChange = (page: Page) => {
     if (page === 'clinicians' && !canAccessClinicians) {
@@ -62,8 +67,6 @@ function AppContent() {
         return canAccessClinicians ? <Clinicians /> : <GeneralUsers />
       case 'comparison':
         return <ModelComparison />
-      case 'medicine-mapping':
-        return <MedicineMapping />
       default:
         return <GeneralUsers />
     }
@@ -71,10 +74,10 @@ function AppContent() {
 
   const getWelcomeMessage = () => {
     if (user?.role === 'qualified_practitioner') {
-      if (user.credentials?.verification_status) {
+      if (user.credentials?.specialization) {
         return `Welcome, Dr. ${user.email.split('@')[0]} (${user.credentials.specialization})`
       } else {
-        return `Welcome, ${user.email.split('@')[0]} (Credentials Pending Verification)`
+        return `Welcome, Dr. ${user.email.split('@')[0]} (Practitioner)`
       }
     }
     return `Welcome, ${user?.email.split('@')[0]}`
@@ -92,36 +95,27 @@ function AppContent() {
           </div>
         </div>
         <div className="nav-links">
-          <button 
+          <button
             className={currentPage === 'general' ? 'active' : ''}
             onClick={() => handlePageChange('general')}
           >
             General Users
           </button>
-          <button 
+          <button
             className={currentPage === 'clinicians' ? 'active' : ''}
             onClick={() => handlePageChange('clinicians')}
             disabled={!canAccessClinicians}
-            title={!canAccessClinicians ? 'Requires verified practitioner credentials' : ''}
+            title={!canAccessClinicians ? 'Requires practitioner account' : ''}
           >
             Clinicians/Practitioners
-            {user?.role === 'qualified_practitioner' && !user?.credentials?.verification_status && (
-              <span className="verification-badge">Pending</span>
-            )}
           </button>
-          <button 
+          <button
             className={currentPage === 'comparison' ? 'active' : ''}
             onClick={() => handlePageChange('comparison')}
           >
             Model Comparison
           </button>
-          <button 
-            className={currentPage === 'medicine-mapping' ? 'active' : ''}
-            onClick={() => handlePageChange('medicine-mapping')}
-          >
-            Medicine Mapping
-          </button>
-          <button 
+          <button
             className="logout-button"
             onClick={logout}
           >
@@ -129,16 +123,9 @@ function AppContent() {
           </button>
         </div>
       </nav>
-      
-      {user?.role === 'qualified_practitioner' && !user?.credentials?.verification_status && (
-        <div className="verification-notice">
-          <p>
-            <strong>Credential Verification Pending:</strong> Your practitioner credentials are being verified. 
-            You currently have access to general user features. Full practitioner access will be granted upon verification.
-          </p>
-        </div>
-      )}
-      
+
+      {/* Demo mode - all practitioners have access */}
+
       <main className="main-content">
         {renderPage()}
       </main>

@@ -210,6 +210,11 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Project specific logs
+logs/knowledge_population.log
+logs/model_training.log
+logs/pure_ayurgenix_training.log
+
 # Runtime data
 pids
 *.pid
@@ -264,6 +269,9 @@ data/training_status.json
 
 # Keep essential datasets but ignore large processed files
 !data/ayurgenix_dataset.csv
+!data/ayurvedic_herbs_comprehensive.csv
+!data/herb.json
+!data/amidha_herbs_comprehensive.json
 data/datasets/*.csv
 data/datasets/*.json
 data/datasets/*.jsonl
@@ -273,18 +281,51 @@ data/datasets/*.feather
 !data/datasets/ayurvedic_meals_processed.csv
 !data/datasets/ayurvedic_qa_processed.csv
 !data/datasets/ayurvedic_remedies_processed.csv
+!data/datasets/datasets_metadata.yaml
 
-# ML Models and weights
-models/
-*.pkl
-*.joblib
-*.h5
-*.hdf5
-*.onnx
-*.pt
-*.pth
-*.bin
-*.safetensors
+# ML Models and weights (keep structure but ignore large files)
+models/*/pytorch_model.bin
+models/*/model.safetensors
+models/*/model.pt
+models/*/best_model.pt
+models/*/*.bin
+models/*/*.pt
+models/*/*.pth
+models/*/*.h5
+models/*/*.hdf5
+models/*/*.onnx
+models/*/*.pkl
+models/*/*.joblib
+# Keep model configs and mappings
+!models/*/config.json
+!models/*/*_mappings.json
+!models/*/label_mappings.json
+!models/*/tokenizer*.json
+!models/*/vocab.txt
+!models/*/special_tokens_map.json
+!models/*/added_tokens.json
+!models/model_status.json
+!models/preprocessing_rules.json
+!models/*_results.json
+
+# Hugging Face cache
+.cache/huggingface/
+transformers_cache/
+
+# PyTorch specific
+*.pth.tar
+checkpoint*.pth
+
+# TensorFlow specific
+*.pb
+saved_model/
+checkpoints/
+
+# Training artifacts
+wandb/
+mlruns/
+tensorboard_logs/
+lightning_logs/
 
 # API keys and secrets
 .secrets

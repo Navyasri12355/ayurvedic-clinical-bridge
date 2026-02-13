@@ -1,50 +1,20 @@
 import React, { useState } from 'react'
-
-interface QueryResult {
-  concepts?: any[]
-  cross_domain_mappings?: any[]
-  confidence_score?: number
-  warnings?: string[]
-  metadata?: any
-}
+import IntelligentQueryForm from '../components/IntelligentQueryForm'
+import IntelligentResults from '../components/IntelligentResults'
+import { IntelligentQueryResponse } from '../services/intelligentQueryService'
 
 export default function GeneralUsers() {
-  const [query, setQuery] = useState('')
-  const [results, setResults] = useState<QueryResult | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [results, setResults] = useState<IntelligentQueryResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!query.trim()) return
-
-    setLoading(true)
+  const handleResults = (queryResults: IntelligentQueryResponse) => {
+    setResults(queryResults)
     setError(null)
+  }
 
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'}/api/knowledge/query`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query_text: query,
-          query_type: 'general',
-          user_role: 'general'
-        })
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      setResults(data)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-    } finally {
-      setLoading(false)
-    }
+  const handleError = (errorMessage: string) => {
+    setError(errorMessage)
+    setResults(null)
   }
 
   return (
@@ -59,25 +29,34 @@ export default function GeneralUsers() {
             The information provided should not replace professional medical advice.
           </p>
         </div>
+        
+        <div className="system-info">
+          <h3>🧠 Intelligent System Features</h3>
+          <div className="features-grid">
+            <div className="feature-card">
+              <h4>⚡ Fast Responses</h4>
+              <p>Knowledge base semantic search provides instant answers to general questions about Ayurvedic concepts and herbs.</p>
+            </div>
+            <div className="feature-card">
+              <h4>🎯 Smart Routing</h4>
+              <p>Queries are automatically routed to the most appropriate model based on complexity and content type.</p>
+            </div>
+            <div className="feature-card">
+              <h4>📚 Comprehensive Knowledge</h4>
+              <p>Access to structured knowledge base with evidence levels, dosage guidelines, and preparation methods.</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="query-section">
-        <form onSubmit={handleSubmit} className="query-form">
-          <div className="form-group">
-            <label htmlFor="query">Ask about Ayurvedic concepts, herbs, or general health information:</label>
-            <textarea
-              id="query"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="e.g., What are the benefits of turmeric? What is Ayurvedic approach to digestive health?"
-              rows={3}
-              disabled={loading}
-            />
-          </div>
-          <button type="submit" disabled={loading || !query.trim()}>
-            {loading ? 'Searching...' : 'Search'}
-          </button>
-        </form>
+        <IntelligentQueryForm
+          onResults={handleResults}
+          onError={handleError}
+          queryType="general"
+          placeholder="Ask about Ayurvedic concepts, herbs, benefits, or general health information..."
+          showAdvancedOptions={true}
+        />
       </div>
 
       {error && (
@@ -89,62 +68,11 @@ export default function GeneralUsers() {
 
       {results && (
         <div className="results-section">
-          <h2>Educational Information</h2>
+          <IntelligentResults 
+            results={results} 
+            showRoutingInfo={true}
+          />
           
-          {results.warnings && results.warnings.length > 0 && (
-            <div className="warnings">
-              <h3>⚠️ Important Notes</h3>
-              {results.warnings.map((warning, index) => (
-                <p key={index}>{warning}</p>
-              ))}
-            </div>
-          )}
-
-          {results.concepts && results.concepts.length > 0 && (
-            <div className="concepts">
-              <h3>Related Concepts</h3>
-              {results.concepts.map((concept, index) => (
-                <div key={index} className="concept-card">
-                  <h4>{concept.concept_name}</h4>
-                  <p><strong>Type:</strong> {concept.concept_type}</p>
-                  {concept.descriptions && concept.descriptions.length > 0 && (
-                    <div>
-                      <strong>Description:</strong>
-                      {concept.descriptions.map((desc: string, i: number) => (
-                        <p key={i}>{desc}</p>
-                      ))}
-                    </div>
-                  )}
-                  {concept.ayurvedic_terms && concept.ayurvedic_terms.length > 0 && (
-                    <p><strong>Ayurvedic Terms:</strong> {concept.ayurvedic_terms.join(', ')}</p>
-                  )}
-                  {concept.sources && concept.sources.length > 0 && (
-                    <p><strong>Sources:</strong> {concept.sources.join(', ')}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {results.cross_domain_mappings && results.cross_domain_mappings.length > 0 && (
-            <div className="mappings">
-              <h3>Cross-Domain Connections</h3>
-              {results.cross_domain_mappings.map((mapping, index) => (
-                <div key={index} className="mapping-card">
-                  <p><strong>Modern Term:</strong> {mapping.biomedical_concept}</p>
-                  <p><strong>Ayurvedic Term:</strong> {mapping.ayurvedic_concept}</p>
-                  <p><strong>Confidence:</strong> {(mapping.confidence_score * 100).toFixed(1)}%</p>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {results.confidence_score !== undefined && (
-            <div className="confidence">
-              <p><strong>Information Confidence:</strong> {(results.confidence_score * 100).toFixed(1)}%</p>
-            </div>
-          )}
-
           <div className="safety-reminder">
             <h3>🔒 Safety Reminder</h3>
             <p>
@@ -159,6 +87,133 @@ export default function GeneralUsers() {
           </div>
         </div>
       )}
+
+      <style jsx="true">{`
+        .general-users-page {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+
+        .header {
+          margin-bottom: 30px;
+        }
+
+        .header h1 {
+          color: #2c3e50;
+          margin-bottom: 20px;
+        }
+
+        .disclaimer {
+          background: #fff3cd;
+          border: 1px solid #ffeaa7;
+          border-radius: 8px;
+          padding: 15px;
+          margin-bottom: 20px;
+        }
+
+        .disclaimer h3 {
+          color: #856404;
+          margin: 0 0 10px 0;
+        }
+
+        .disclaimer p {
+          color: #856404;
+          margin: 0;
+        }
+
+        .system-info {
+          background: #e8f4f8;
+          border-radius: 8px;
+          padding: 20px;
+          margin-bottom: 20px;
+        }
+
+        .system-info h3 {
+          color: #1976d2;
+          margin: 0 0 15px 0;
+        }
+
+        .features-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 15px;
+        }
+
+        .feature-card {
+          background: white;
+          border-radius: 6px;
+          padding: 15px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .feature-card h4 {
+          color: #1976d2;
+          margin: 0 0 8px 0;
+          font-size: 1em;
+        }
+
+        .feature-card p {
+          color: #666;
+          margin: 0;
+          font-size: 0.9em;
+          line-height: 1.4;
+        }
+
+        .query-section {
+          margin-bottom: 30px;
+        }
+
+        .error-message {
+          background: #f8d7da;
+          border: 1px solid #f5c6cb;
+          border-radius: 8px;
+          padding: 15px;
+          margin-bottom: 20px;
+        }
+
+        .error-message h3 {
+          color: #721c24;
+          margin: 0 0 10px 0;
+        }
+
+        .error-message p {
+          color: #721c24;
+          margin: 0;
+        }
+
+        .results-section {
+          margin-bottom: 30px;
+        }
+
+        .safety-reminder {
+          background: #d1ecf1;
+          border: 1px solid #bee5eb;
+          border-radius: 8px;
+          padding: 20px;
+          margin-top: 30px;
+        }
+
+        .safety-reminder h3 {
+          color: #0c5460;
+          margin: 0 0 15px 0;
+        }
+
+        .safety-reminder p {
+          color: #0c5460;
+          margin: 0 0 10px 0;
+        }
+
+        .safety-reminder ul {
+          color: #0c5460;
+          margin: 0;
+          padding-left: 20px;
+        }
+
+        .safety-reminder li {
+          margin-bottom: 5px;
+        }
+      `}</style>
     </div>
   )
 }
