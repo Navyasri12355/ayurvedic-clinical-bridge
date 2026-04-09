@@ -178,7 +178,7 @@ class HerbPredictor:
                     tokenizer = AutoTokenizer.from_pretrained(model_dir)
                     
                     # Load model checkpoint
-                    checkpoint = torch.load(model_dir / "pytorch_model.bin", map_location=self.device)
+                    checkpoint = torch.load(model_dir / "pytorch_model.bin", map_location=self.device, weights_only=False)
                     
                     # Load mappings
                     mapping_file = model_dir / f"{model_type}_mappings.json"
@@ -206,7 +206,7 @@ class HerbPredictor:
                     
                     # Create model instance
                     config = {
-                        'biobert_model': 'dmis-lab/biobert-base-cased-v1.1',
+                        'biobert_model': 'dmis-lab/biobert-v1.1',
                         'simple': True
                     }
                     

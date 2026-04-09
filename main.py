@@ -127,7 +127,7 @@ class PureMLPredictor:
 
         logger.info("Loading pure ML model...")
         self.tokenizer = AutoTokenizer.from_pretrained(model_dir)
-        checkpoint = torch.load(model_dir / "pytorch_model.bin", map_location=self.device)
+        checkpoint = torch.load(model_dir / "pytorch_model.bin", map_location=self.device, weights_only=False)
 
         with open(model_dir / "disease_mappings.json") as f:
             mappings = json.load(f)

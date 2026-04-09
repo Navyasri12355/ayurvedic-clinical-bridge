@@ -22,9 +22,9 @@ class SemanticHerbMatcher:
     """
     
     def __init__(
-        self, 
-        herb_names: List[str], 
-        model_name: str = 'dmis-lab/biobert-base-cased-v1.1',
+        self,
+        herb_names: List[str],
+        model_name: str = 'dmis-lab/biobert-v1.1',
         similarity_threshold: float = 0.85,  # Raised from 0.65 to be more strict
         max_matches: int = 2  # Limit to top 2 matches
     ):
