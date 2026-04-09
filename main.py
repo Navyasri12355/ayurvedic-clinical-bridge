@@ -481,14 +481,35 @@ def intelligent_query_process():
         # ----------------------------------------------------------------
         # Step 5 — Disease prediction (BioBERT classifier)
         # ----------------------------------------------------------------
-        # Skip when the query is herb-focused and no symptoms are present.
+        # ALWAYS run disease prediction for any non-trivial query
         predictions = []
-        if not (herbs and not symptoms) and predictor:
+        if predictor and query.strip():
             try:
                 predictions = predictor.predict(query, top_k=5)
                 logger.info("BioBERT predictions: %d", len(predictions))
             except Exception as e:
                 logger.error("BioBERT prediction error: %s", e)
+
+        # ----------------------------------------------------------------
+        # Step 5b — If we got predictions but no herbs/symptoms, infer context
+        # ----------------------------------------------------------------
+        if predictions and not (herbs or symptoms):
+            top_disease = predictions[0]['disease']
+            logger.info("Got disease prediction without symptoms: %s", top_disease)
+
+            # Try to find related herbs based on the disease
+            try:
+                disease_keywords = top_disease.lower().split()
+                for keyword in disease_keywords:
+                    if len(keyword) > 3:
+                        found_herbs = herb_predictor.find_herbs_for_symptom(keyword)
+                        for h in found_herbs:
+                            if h not in herbs:
+                                herbs.append(h)
+                                inferred_herbs.append(h)
+                                logger.info("Inferred herb %s for disease keyword %s", h, keyword)
+            except Exception as e:
+                logger.error("Disease-based herb inference error: %s", e)
 
         # ----------------------------------------------------------------
         # Step 6 — Build natural-language response from model outputs
@@ -573,20 +594,20 @@ def _build_practitioner_response(
     parts.append(f"**Query**: \"{query[:150]}{'...' if len(query) > 150 else ''}\"\n")
 
     # Show detected entities
-    if entities:
-        parts.append("**Clinical Entities Detected:**")
+    if entities or predictions:
+        parts.append("**Clinical Information:**")
         if symptoms:
             parts.append(f"  • Symptoms: {', '.join(symptoms)}")
+        if diseases_ner:
+            parts.append(f"  • Conditions (NER): {', '.join(diseases_ner)}")
         direct_herbs = [h for h in herbs if h not in inferred_herbs]
         if direct_herbs:
             parts.append(f"  • Herbs mentioned: {', '.join(direct_herbs)}")
         if inferred_herbs:
-            parts.append(f"  • Inferred herbs (symptom-based): {', '.join(inferred_herbs)}")
-        if diseases_ner:
-            parts.append(f"  • Conditions: {', '.join(diseases_ner)}")
+            parts.append(f"  • Inferred herbs: {', '.join(inferred_herbs)}")
         parts.append("")
-    else:
-        parts.append("No clinical entities detected. Please provide specific symptoms or herb names.\n")
+    elif not predictions:
+        parts.append("No clinical entities detected.\n")
         return "\n".join(parts)
 
     # Show disease predictions with clinical context
@@ -640,19 +661,22 @@ def _build_practitioner_response(
         parts.append("")
 
     # Clinical recommendations
-    if predictions and symptoms:
-        parts.append("**Clinical Correlation:**")
+    if predictions:
+        parts.append("**Clinical Approach:**")
         top_diagnosis = predictions[0]['disease']
-        suggested_herbs = [h['name'] for h in herb_results[:2]]
-        if suggested_herbs:
+        if herb_results:
+            suggested_herbs = [h['name'] for h in herb_results[:3]]
             herbs_str = ', '.join(suggested_herbs)
             parts.append(
                 f"For the predicted condition of {top_diagnosis}, "
-                f"the model identified {herbs_str} as potentially beneficial. "
-                "Cross-reference with clinical guidelines and patient constitution."
+                f"the model identified: {herbs_str}. "
+                f"Review alignment with patient dosha, digestive capacity, and clinical presentation."
             )
         else:
-            parts.append(f"For {top_diagnosis}, consider examining traditional herb options aligned with the patient's condition and dosha constitution.")
+            parts.append(
+                f"For {top_diagnosis}, consider traditional Ayurvedic management "
+                f"aligned with patient constitution and current symptoms."
+            )
         parts.append("")
 
     if not (predictions and herb_results):
@@ -687,25 +711,40 @@ def _build_general_response(
         # Show recommended herbs
         if herb_results:
             parts.append("**Recommended herbs that may help:**\n")
-            for res in herb_results[:3]:  # Top 3 only
+            for res in herb_results[:3]:
                 name = res['name']
                 info = res.get('info', {})
                 benefits = res.get('benefits', [])
 
-                # Create concise herb recommendation
-                if info.get('found'):
-                    if info.get('preview'):
-                        parts.append(f"• **{name}**: {info['preview']}")
+                if info.get('found') and info.get('preview'):
+                    parts.append(f"• **{name}**: {info['preview']}")
                     if benefits:
                         top_benefit = benefits[0]
-                        parts.append(f"  - Primary action: {top_benefit['benefit']} ({top_benefit['confidence_percentage']})")
+                        parts.append(f"  Action: {top_benefit['benefit']} ({top_benefit['confidence_percentage']})")
                     parts.append("")
         else:
-            parts.append("Unfortunately, I couldn't find specific herb recommendations matched to these symptoms in the database.\n")
+            parts.append("Unfortunately, I couldn't find specific herb recommendations matched to these symptoms.\n")
 
         found_something = True
 
-    # --- Secondary pathway: herbs only (no symptoms) ---
+    # --- Secondary pathway: disease-focused query (no clear symptoms) ---
+    elif predictions and predictions[0]['confidence'] >= 0.10:
+        top_pred = predictions[0]
+        parts.append(f"**Based on your query, you may be asking about: {top_pred['disease']}** ({top_pred['confidence_percentage']})\n")
+
+        if herb_results:
+            parts.append("**Related herbs in Ayurvedic tradition:**\n")
+            for res in herb_results[:3]:
+                name = res['name']
+                info = res.get('info', {})
+                if info.get('found') and info.get('preview'):
+                    parts.append(f"• **{name}**: {info['preview']}\n")
+        else:
+            parts.append("The system identified this condition but didn't find matching herbs in the database.\n")
+
+        found_something = True
+
+    # --- Tertiary pathway: herbs only (no symptoms) ---
     elif herb_results:
         parts.append("**Herb Information:**\n")
         for res in herb_results:
@@ -725,10 +764,10 @@ def _build_general_response(
     if ner_safety and ner_safety.get('risk_level') == 'high':
         recs = ner_safety.get('recommendations', [])
         if recs:
-            parts.append(f"\n⚠️ **Important**: {' '.join(recs)}")
+            parts.append(f"\n**Important**: {' '.join(recs)}")
 
     parts.append(
-        "\n💡 **Disclaimer**: I'm an AI assistant providing general information only. "
+        "\n**Disclaimer**: I'm an AI assistant providing general information only. "
         "Always consult a qualified healthcare professional for medical diagnosis and treatment."
     )
     return "\n".join(parts)
