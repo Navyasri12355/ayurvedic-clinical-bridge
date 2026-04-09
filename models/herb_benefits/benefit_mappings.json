@@ -103,5 +103,6 @@
     "48": "Garbhaposhaka",
     "49": "Garbhashaya Sankochaka"
   },
-  "num_classes": 50
+  "num_classes": 50,
+  "simple": true
 }

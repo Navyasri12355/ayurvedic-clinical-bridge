@@ -1,11 +1,20 @@
 {
-  "O": 0,
-  "B_HERB": 1,
-  "I_HERB": 2,
-  "B_DISEASE": 3,
-  "I_DISEASE": 4,
-  "B_SYMPTOM": 5,
-  "I_SYMPTOM": 6,
-  "B_DOSAGE": 7,
-  "I_DOSAGE": 8
+  "label_to_id": {
+    "O": 0,
+    "B-SYMPTOM": 1,
+    "I-SYMPTOM": 2,
+    "B-HERB": 3,
+    "I-HERB": 4,
+    "B-DISEASE": 5,
+    "I-DISEASE": 6
+  },
+  "id_to_label": {
+    "0": "O",
+    "1": "B-SYMPTOM",
+    "2": "I-SYMPTOM",
+    "3": "B-HERB",
+    "4": "I-HERB",
+    "5": "B-DISEASE",
+    "6": "I-DISEASE"
+  }
 }

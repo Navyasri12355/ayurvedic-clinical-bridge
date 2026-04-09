@@ -161,37 +161,64 @@ class ExplainabilityService:
     def _initialize_shap_explainer(self):
         """Initialize SHAP explainer as secondary method."""
         try:
-            # Create a model wrapper for SHAP
             def model_wrapper(texts):
                 """Wrapper function for SHAP to call the model."""
                 if isinstance(texts, str):
                     texts = [texts]
-                
+                elif isinstance(texts, (list, np.ndarray)):
+                    # Handle numpy array or list
+                    if isinstance(texts, np.ndarray):
+                        texts = texts.tolist()
+                    # Ensure it's a list of strings
+                    if texts and not isinstance(texts[0], str):
+                        texts = [str(t) for t in texts]
+
                 results = []
                 for text in texts:
+                    if not isinstance(text, str):
+                        text = str(text)
+
                     inputs = self.tokenizer(
-                        text, 
-                        return_tensors='pt', 
-                        padding=True, 
-                        truncation=True, 
+                        text,
+                        return_tensors='pt',
+                        padding=True,
+                        truncation=True,
                         max_length=128
                     )
-                    
+
                     with torch.no_grad():
                         outputs = self.model(inputs['input_ids'], inputs['attention_mask'])
                         logits = outputs['logits']
                         probs = torch.softmax(logits, dim=-1)
                         results.append(probs.cpu().numpy())
-                
-                return np.vstack(results)
-            
-            # Initialize SHAP explainer with text masker
-            self.explainer = shap.Explainer(model_wrapper, shap.maskers.Text(self.tokenizer))
-            self.shap_available = True
-            logger.info("SHAP explainer initialized successfully")
-            
+
+                result = np.vstack(results) if results else np.array([])
+                return result
+
+            # Initialize SHAP explainer with masking strategy
+            try:
+                masker = shap.maskers.Text(self.tokenizer)
+                self.explainer = shap.Explainer(model_wrapper, masker)
+                self.shap_available = True
+                logger.info("SHAP explainer initialized successfully with Text masker")
+            except TypeError as te:
+                # Try without masker (simpler approach)
+                try:
+                    logger.warning(f"Text masker failed: {te}. Trying without masker...")
+                    self.explainer = shap.Explainer(model_wrapper)
+                    self.shap_available = True
+                    logger.info("SHAP explainer initialized without masker")
+                except Exception as e2:
+                    logger.warning(f"SHAP initialization failed completely: {e2}. Using gradient method only.")
+                    self.explainer = None
+                    self.shap_available = False
+            except Exception as shap_init_error:
+                logger.warning(f"SHAP Explainer initialization failed: {shap_init_error}. Continuing with gradient-based explanations only.")
+                self.explainer = None
+                self.shap_available = False
+
         except Exception as e:
-            logger.error(f"SHAP explainer initialization failed: {e}")
+            logger.warning(f"SHAP explainer initialization deferred: {e}")
             self.explainer = None
             self.shap_available = False
     

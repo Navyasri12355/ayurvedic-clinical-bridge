@@ -51,7 +51,7 @@ class HerbBioBERT(nn.Module):
 
 class HerbPredictor:
     """Pure ML predictor for herb-related queries."""
-    
+
     def __init__(self):
         self.device = torch.device('cpu')
         self.models = {}
@@ -62,44 +62,96 @@ class HerbPredictor:
         self._load_herb_data()
         self._initialize_synonym_matcher()
         self.load_models()
+
+    def _load_herb_data(self):
+        """Load herb data from JSON files."""
+        try:
+            # Try loading from comprehensive JSON file first
+            herb_files = [
+                Path('data/amidha_herbs_comprehensive.json'),
+                Path('data/herb.json'),
+            ]
+
+            for herb_file in herb_files:
+                if herb_file.exists():
+                    try:
+                        with open(herb_file, 'r', encoding='utf-8') as f:
+                            self.herb_data = json.load(f)
+                        logger.info(f"Loaded {len(self.herb_data)} herbs from {herb_file}")
+                        return
+                    except Exception as e:
+                        logger.warning(f"Failed to load {herb_file}: {e}")
+                        continue
+
+            logger.warning("No herb data files found. Herb predictor may have limited functionality")
+            self.herb_data = []
+        except Exception as e:
+            logger.error(f"Error loading herb data: {e}")
+            self.herb_data = []
     
     def find_herbs_for_symptom(self, symptom: str) -> list:
         """
         Find herbs that are known to treat a specific symptom/condition.
-        Searches through herb data reviews and traditional properties.
+        Searches through herb data reviews and traditional properties using scoring.
         """
         relevant_herbs = []
-        symptom_lower = symptom.lower()
-        
-        # Keywords to check in 'prabhav' (actions) or preview text
-        # Simple string matching for now
+        symptom_lower = symptom.lower().strip()
+
+        # Split compound symptoms for better matching
+        symptom_words = set(symptom_lower.split())
+
         for herb in self.herb_data:
             score = 0
-            
-            # Check preview text
+            matches = []
+
+            # Check preview text (2 points per match)
             if 'preview' in herb and herb['preview']:
-                if symptom_lower in herb['preview'].lower():
-                    score += 2
-            
-            # Check properties/actions
+                preview_lower = herb['preview'].lower()
+                for word in symptom_words:
+                    if len(word) > 2 and word in preview_lower:
+                        score += 2
+                        matches.append(f"preview: {word}")
+
+            # Check traditional properties/actions (prabhav) - 3 points
             if 'prabhav' in herb and herb['prabhav']:
-                # prabhav is a list of strings
                 for action in herb['prabhav']:
-                    if symptom_lower in action.lower():
-                        score += 3
-            
+                    action_lower = action.lower()
+                    for word in symptom_words:
+                        if len(word) > 2 and word in action_lower:
+                            score += 3
+                            matches.append(f"action: {word}")
+
+            # Check guna (qualities) - 2 points
+            if 'guna' in herb and herb['guna']:
+                for quality in herb['guna']:
+                    quality_lower = quality.lower()
+                    for word in symptom_words:
+                        if len(word) > 2 and word in quality_lower:
+                            score += 2
+                            matches.append(f"quality: {word}")
+
+            # Check rasa (taste/flavor) - 1 point
+            if 'rasa' in herb and herb['rasa']:
+                for taste in herb['rasa']:
+                    taste_lower = taste.lower()
+                    for word in symptom_words:
+                        if len(word) > 2 and word in taste_lower:
+                            score += 1
+                            matches.append(f"taste: {word}")
+
             if score > 0:
                 relevant_herbs.append({
                     'name': herb['name'],
                     'score': score,
-                    'reason': f"Matches symptom '{symptom}'"
+                    'matches': matches[:3],  # Top 3 match reasons
+                    'reason': f"Matches symptom '{symptom}' ({', '.join(matches[:2]) if matches else 'traditional use'})"
                 })
-        
+
         # Sort by score descending
         relevant_herbs.sort(key=lambda x: x['score'], reverse=True)
-        
-        # Return top 3 unique herb names
-        return [h['name'] for h in relevant_herbs[:3]]
+
+        # Return top 5 unique herb names (from top scoring)
+        return [h['name'] for h in relevant_herbs[:5]]
     
     def _initialize_synonym_matcher(self):
         """Initialize the herb synonym matcher."""
