@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background -->
+  <circle cx="50" cy="50" r="48" fill="#F0F9E8"/>
+
+  <!-- Leaf shape (main element) -->
+  <path d="M 50 15 Q 70 35 70 50 Q 70 75 50 85 Q 30 75 30 50 Q 30 35 50 15" fill="#2D7A3E" stroke="#1B4D27" stroke-width="1.5"/>
+
+  <!-- Leaf vein -->
+  <line x1="50" y1="15" x2="50" y2="85" stroke="#1B4D27" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- Medical cross overlay (subtle) -->
+  <g opacity="0.8">
+    <rect x="48" y="38" width="4" height="24" fill="#D4AF37" rx="2"/>
+    <rect x="38" y="48" width="24" height="4" fill="#D4AF37" rx="2"/>
+  </g>
+
+  <!-- Accent circles -->
+  <circle cx="50" cy="50" r="3" fill="#D4AF37" opacity="0.9"/>
+</svg>
