@@ -20,6 +20,7 @@ from ayurvedic_clinical_bridge.services.herb_predictor import HerbPredictor
 from ayurvedic_clinical_bridge.services.explainability_service import ExplainabilityService
 from ayurvedic_clinical_bridge.models import get_bilstm_crf_processor
 from ayurvedic_clinical_bridge.services.semantic_herb_matcher import SemanticHerbMatcher
+from ayurvedic_clinical_bridge.services.llm_api_routes import llm_bp, init_llm_service
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -215,6 +216,16 @@ try:
         logger.info("Explainability service attached to predictor")
 except Exception as e:
     logger.error(f"Explainability service init failed: {e}")
+
+# Initialize LLM service
+try:
+    init_llm_service(app)
+    logger.info("✓ LLM service initialized successfully")
+except Exception as e:
+    logger.warning(f"⚠ LLM service initialization warning: {e}")
+
+# Register LLM API blueprint
+app.register_blueprint(llm_bp)
 
 
 # ---------------------------------------------------------------------------
