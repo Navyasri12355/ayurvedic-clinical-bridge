@@ -22,8 +22,8 @@ import time
 import sys
 
 # Add project root to path
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root / "src" / "backend"))
 
 from ayurvedic_clinical_bridge.models.bilstm_crf_model import (
     BiLSTMCRF, BiLSTMCRFConfig, BiLSTMCRFTokenizer, create_default_vocab

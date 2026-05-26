@@ -14,7 +14,7 @@ import time
 import sys
 
 project_root = Path(__file__).parent
-sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "src" / "backend"))
 
 from ayurvedic_clinical_bridge.services.herb_predictor import HerbPredictor
 from ayurvedic_clinical_bridge.services.explainability_service import ExplainabilityService
